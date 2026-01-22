@@ -1,0 +1,60 @@
+name: Generate DSA Stats
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'leetcode/**'
+      - 'hackerrank/**'
+      - 'codeforces/**'
+      - '**.ts'
+      - '**.js'
+      - '**.py'
+      - '**.java'
+      - '**.cpp'
+  workflow_dispatch:
+
+jobs:
+  generate-stats:
+    runs-on: ubuntu-latest
+    
+    permissions:
+      contents: write
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Install dependencies
+        run: |
+          npm install -g typescript ts-node @types/node
+      
+      - name: Generate stats
+        run: |
+          ts-node scripts/generate-stats.ts
+      
+      - name: Check for changes
+        id: git-check
+        run: |
+          git diff --exit-code stats.json || echo "changed=true" >> $GITHUB_OUTPUT
+      
+      - name: Commit and push stats
+        if: steps.git-check.outputs.changed == 'true'
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add stats.json
+          git commit -m "📊 Update DSA stats [skip ci]"
+          git push
+      
+      - name: No changes detected
+        if: steps.git-check.outputs.changed != 'true'
+        run: echo "No changes in stats.json"

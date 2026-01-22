@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DSA Stats - Portfolio Example</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 2.5rem;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-card h2 {
+            color: #667eea;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+        
+        .stat-card .value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .difficulty-chart {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 40px;
+        }
+        
+        .difficulty-chart h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+        
+        .difficulty-bar {
+            margin: 15px 0;
+        }
+        
+        .difficulty-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        
+        .bar {
+            height: 30px;
+            border-radius: 5px;
+            transition: width 0.5s ease;
+        }
+        
+        .bar.easy { background: linear-gradient(90deg, #10b981, #059669); }
+        .bar.medium { background: linear-gradient(90deg, #f59e0b, #d97706); }
+        .bar.hard { background: linear-gradient(90deg, #ef4444, #dc2626); }
+        
+        .loading {
+            color: white;
+            text-align: center;
+            font-size: 1.5rem;
+        }
+        
+        .topics-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .topics-section h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+        
+        .topic-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .topic-tag {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 DSA Journey Statistics</h1>
+        
+        <div id="loading" class="loading">Loading statistics...</div>
+        
+        <div id="stats-content" style="display: none;">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h2>Total Solved</h2>
+                    <div class="value" id="total-solved">0</div>
+                </div>
+                
+                <div class="stat-card">
+                    <h2>🔥 Current Streak</h2>
+                    <div class="value" id="current-streak">0</div>
+                </div>
+                
+                <div class="stat-card">
+                    <h2>🏆 Longest Streak</h2>
+                    <div class="value" id="longest-streak">0</div>
+                </div>
+                
+                <div class="stat-card">
+                    <h2>📅 Last Updated</h2>
+                    <div class="value" id="last-updated" style="font-size: 1.2rem;">-</div>
+                </div>
+            </div>
+            
+            <div class="difficulty-chart">
+                <h2>📊 Difficulty Breakdown</h2>
+                
+                <div class="difficulty-bar">
+                    <div class="difficulty-label">
+                        <span>Easy</span>
+                        <span id="easy-count">0</span>
+                    </div>
+                    <div class="bar easy" id="easy-bar" style="width: 0%"></div>
+                </div>
+                
+                <div class="difficulty-bar">
+                    <div class="difficulty-label">
+                        <span>Medium</span>
+                        <span id="medium-count">0</span>
+                    </div>
+                    <div class="bar medium" id="medium-bar" style="width: 0%"></div>
+                </div>
+                
+                <div class="difficulty-bar">
+                    <div class="difficulty-label">
+                        <span>Hard</span>
+                        <span id="hard-count">0</span>
+                    </div>
+                    <div class="bar hard" id="hard-bar" style="width: 0%"></div>
+                </div>
+            </div>
+            
+            <div class="topics-section">
+                <h2>📚 Topics Covered</h2>
+                <div class="topic-tags" id="topics-container"></div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Replace this URL with your GitHub raw stats.json URL
+        const STATS_URL = 'https://raw.githubusercontent.com/gitwithashishroy/learning-dsa/main/stats.json';
+        
+        async function loadStats() {
+            try {
+                const response = await fetch(STATS_URL);
+                const stats = await response.json();
+                
+                // Update total solved
+                document.getElementById('total-solved').textContent = stats.totalSolved;
+                
+                // Update streaks
+                document.getElementById('current-streak').textContent = stats.streak.current;
+                document.getElementById('longest-streak').textContent = stats.streak.longest;
+                
+                // Update last updated
+                const lastUpdated = new Date(stats.lastUpdated);
+                document.getElementById('last-updated').textContent = lastUpdated.toLocaleDateString();
+                
+                // Update difficulty breakdown
+                const total = stats.totalSolved || 1; // Avoid division by zero
+                document.getElementById('easy-count').textContent = stats.byDifficulty.Easy;
+                document.getElementById('medium-count').textContent = stats.byDifficulty.Medium;
+                document.getElementById('hard-count').textContent = stats.byDifficulty.Hard;
+                
+                document.getElementById('easy-bar').style.width = `${(stats.byDifficulty.Easy / total) * 100}%`;
+                document.getElementById('medium-bar').style.width = `${(stats.byDifficulty.Medium / total) * 100}%`;
+                document.getElementById('hard-bar').style.width = `${(stats.byDifficulty.Hard / total) * 100}%`;
+                
+                // Update topics
+                const topicsContainer = document.getElementById('topics-container');
+                topicsContainer.innerHTML = '';
+                
+                Object.entries(stats.byTopic).forEach(([topic, count]) => {
+                    const tag = document.createElement('div');
+                    tag.className = 'topic-tag';
+                    tag.textContent = `${topic} (${count})`;
+                    topicsContainer.appendChild(tag);
+                });
+                
+                // Show content, hide loading
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('stats-content').style.display = 'block';
+                
+            } catch (error) {
+                console.error('Error loading stats:', error);
+                document.getElementById('loading').textContent = 'Error loading statistics. Please try again later.';
+            }
+        }
+        
+        // Load stats when page loads
+        loadStats();
+    </script>
+</body>
+</html>

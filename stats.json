@@ -1,0 +1,32 @@
+{
+  "totalSolved": 1,
+  "lastUpdated": "2026-01-22T02:25:08.362Z",
+  "byDifficulty": {
+    "Easy": 1,
+    "Medium": 0,
+    "Hard": 0
+  },
+  "byLanguage": {
+    "TypeScript": 1
+  },
+  "byTopic": {
+    "Function": 1
+  },
+  "solutions": [
+    {
+      "filePath": "leetcode/hello-world.ts",
+      "problem": "Hello World",
+      "difficulty": "Easy",
+      "topic": "Function",
+      "language": "TypeScript",
+      "timeComplexity": "O(1)",
+      "spaceComplexity": "O(1)",
+      "date": "2026-01-22",
+      "leetcodeUrl": "https://leetcode.com/problems/create-hello-world/"
+    }
+  ],
+  "streak": {
+    "current": 1,
+    "longest": 1
+  }
+}

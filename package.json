@@ -1,0 +1,22 @@
+{
+  "name": "dsa-solutions",
+  "version": "1.0.0",
+  "description": "Data Structures and Algorithms solutions with automated stats generation",
+  "scripts": {
+    "generate-stats": "ts-node scripts/generate-stats.ts",
+    "stats": "npm run generate-stats"
+  },
+  "keywords": [
+    "dsa",
+    "leetcode",
+    "algorithms",
+    "data-structures"
+  ],
+  "author": "Ashish Roy",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.11.5",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  }
+}
