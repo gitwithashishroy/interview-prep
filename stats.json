@@ -1,16 +1,16 @@
 {
-  "totalSolved": 1,
-  "lastUpdated": "2026-01-22T02:25:08.362Z",
+  "totalSolved": 2,
+  "lastUpdated": "2026-01-23T03:56:07.655Z",
   "byDifficulty": {
-    "Easy": 1,
+    "Easy": 2,
     "Medium": 0,
     "Hard": 0
   },
   "byLanguage": {
-    "TypeScript": 1
+    "TypeScript": 2
   },
   "byTopic": {
-    "Function": 1
+    "Function": 2
   },
   "solutions": [
     {
@@ -23,10 +23,33 @@
       "spaceComplexity": "O(1)",
       "date": "2026-01-22",
       "leetcodeUrl": "https://leetcode.com/problems/create-hello-world/"
+    },
+    {
+      "filePath": "leetcode/palindrom.ts",
+      "problem": "Palindrome Check",
+      "difficulty": "Easy",
+      "topic": "Function",
+      "language": "TypeScript",
+      "timeComplexity": "O(log10(n))",
+      "spaceComplexity": "O(1)",
+      "date": "2026-01-23",
+      "leetcodeUrl": "https://leetcode.com/problems/palindrome-number/"
     }
   ],
   "streak": {
-    "current": 1,
-    "longest": 1
-  }
+    "current": 2,
+    "longest": 2
+  },
+  "username": "ashish_roy",
+  "badges": [],
+  "submissionCalendar": [
+    {
+      "date": "2026-01-22",
+      "count": 1
+    },
+    {
+      "date": "2026-01-23",
+      "count": 1
+    }
+  ]
 }
