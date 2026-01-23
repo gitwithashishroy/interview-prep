@@ -82,12 +82,12 @@ function extractMetadataFromFile(filePath: string): Solution | null {
         const topicStr = topicMatch[1].trim();
         // Support both single topic and comma-separated topics
         const metadataTopics = topicStr.includes(',') 
-          ? topicStr.split(',').map(t => t.trim())
+          ? topicStr.split(',').map((t: string) => t.trim())
           : [topicStr];
         
         // Merge folder topics with metadata topics (avoid duplicates)
         const allTopics = [...folderTopics];
-        metadataTopics.forEach(topic => {
+        metadataTopics.forEach((topic: string) => {
           if (!allTopics.includes(topic)) {
             allTopics.push(topic);
           }
@@ -120,7 +120,7 @@ function extractMetadataFromFile(filePath: string): Solution | null {
 function getAllSolutionFiles(dir: string, fileList: string[] = []): string[] {
   const files = fs.readdirSync(dir);
 
-  files.forEach((file) => {
+  files.forEach((file: string) => {
     const filePath = path.join(dir, file);
     const stat = fs.statSync(filePath);
 
