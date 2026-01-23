@@ -2,27 +2,24 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
+import { USER_CONFIG } from './config';
 
-interface Solution {
+export interface Solution {
+  filePath: string;
   problem: string;
-  difficulty: string;
-  topic: string;
+  difficulty: 'Easy' | 'Medium' | 'Hard';
+  topic: string | string[];
   language: string;
   timeComplexity: string;
   spaceComplexity: string;
   date: string;
   leetcodeUrl: string;
-  filePath: string;
 }
 
-interface Stats {
+export interface LeetCodeStats {
   totalSolved: number;
   lastUpdated: string;
-  byDifficulty: {
-    Easy: number;
-    Medium: number;
-    Hard: number;
-  };
+  byDifficulty: Record<string, number>;
   byLanguage: Record<string, number>;
   byTopic: Record<string, number>;
   solutions: Solution[];
@@ -30,6 +27,12 @@ interface Stats {
     current: number;
     longest: number;
   };
+  // Optional fields - from config
+  username?: string;
+  ranking?: string;
+  contestRating?: number;
+  badges?: string[];
+  submissionCalendar?: Array<{ date: string; count: number }>;
 }
 
 function extractMetadataFromFile(filePath: string): Solution | null {
@@ -40,6 +43,27 @@ function extractMetadataFromFile(filePath: string): Solution | null {
     const metadata: any = {
       filePath: filePath.replace(process.cwd() + '/', ''),
     };
+
+    // Extract topic from folder structure
+    const relativePath = filePath.replace(process.cwd() + '/', '');
+    const pathParts = relativePath.split(path.sep);
+    const folderTopics: string[] = [];
+    
+    // Skip root folders like 'leetcode', 'dsa-practice', etc.
+    // Extract intermediate folder names as topics
+    const skipFolders = ['leetcode', 'dsa-practice', 'examples', 'scripts', 'node_modules'];
+    for (let i = 0; i < pathParts.length - 1; i++) {
+      const folder = pathParts[i];
+      if (!skipFolders.includes(folder)) {
+        // Capitalize first letter and convert hyphens/underscores to spaces
+        const topicName = folder
+          .replace(/[-_]/g, ' ')
+          .split(' ')
+          .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+          .join(' ');
+        folderTopics.push(topicName);
+      }
+    }
 
     // Extract metadata from comments
     for (const line of lines) {
@@ -54,7 +78,26 @@ function extractMetadataFromFile(filePath: string): Solution | null {
 
       if (problemMatch) metadata.problem = problemMatch[1].trim();
       if (difficultyMatch) metadata.difficulty = difficultyMatch[1].trim();
-      if (topicMatch) metadata.topic = topicMatch[1].trim();
+      if (topicMatch) {
+        const topicStr = topicMatch[1].trim();
+        // Support both single topic and comma-separated topics
+        const metadataTopics = topicStr.includes(',') 
+          ? topicStr.split(',').map(t => t.trim())
+          : [topicStr];
+        
+        // Merge folder topics with metadata topics (avoid duplicates)
+        const allTopics = [...folderTopics];
+        metadataTopics.forEach(topic => {
+          if (!allTopics.includes(topic)) {
+            allTopics.push(topic);
+          }
+        });
+        
+        metadata.topic = allTopics.length === 1 ? allTopics[0] : allTopics;
+      } else if (folderTopics.length > 0) {
+        // If no topic in metadata, use folder topics
+        metadata.topic = folderTopics.length === 1 ? folderTopics[0] : folderTopics;
+      }
       if (languageMatch) metadata.language = languageMatch[1].trim();
       if (timeMatch) metadata.timeComplexity = timeMatch[1].trim();
       if (spaceMatch) metadata.spaceComplexity = spaceMatch[1].trim();
@@ -157,7 +200,24 @@ function calculateStreak(solutions: Solution[]): { current: number; longest: num
   return { current: currentStreak, longest: longestStreak };
 }
 
-function generateStats(): Stats {
+function generateSubmissionCalendar(solutions: Solution[]): Array<{ date: string; count: number }> {
+  const dateCountMap: Record<string, number> = {};
+
+  // Count solutions per date
+  solutions.forEach(solution => {
+    if (solution.date) {
+      const date = solution.date.split('T')[0]; // Get just the date part (YYYY-MM-DD)
+      dateCountMap[date] = (dateCountMap[date] || 0) + 1;
+    }
+  });
+
+  // Convert to array and sort by date
+  return Object.entries(dateCountMap)
+    .map(([date, count]) => ({ date, count }))
+    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+}
+
+function generateStats(): LeetCodeStats {
   const rootDir = process.cwd();
   const solutionFiles = getAllSolutionFiles(rootDir);
   const solutions: Solution[] = [];
@@ -171,7 +231,7 @@ function generateStats(): Stats {
     }
   }
 
-  const stats: Stats = {
+  const stats: LeetCodeStats = {
     totalSolved: solutions.length,
     lastUpdated: new Date().toISOString(),
     byDifficulty: {
@@ -183,6 +243,10 @@ function generateStats(): Stats {
     byTopic: {},
     solutions: solutions,
     streak: calculateStreak(solutions),
+    // Include user config data
+    ...USER_CONFIG,
+    // Generate submission calendar from solution dates
+    submissionCalendar: generateSubmissionCalendar(solutions),
   };
 
   // Count by difficulty
@@ -197,32 +261,35 @@ function generateStats(): Stats {
       stats.byLanguage[solution.language] = (stats.byLanguage[solution.language] || 0) + 1;
     }
 
-    // Count by topic
+    // Count by topic (handle both string and array)
     if (solution.topic) {
-      stats.byTopic[solution.topic] = (stats.byTopic[solution.topic] || 0) + 1;
+      const topics = Array.isArray(solution.topic) ? solution.topic : [solution.topic];
+      topics.forEach(topic => {
+        stats.byTopic[topic] = (stats.byTopic[topic] || 0) + 1;
+      });
     }
   });
 
   return stats;
 }
 
-function main() {
-  console.log('Generating DSA stats...');
-  
+function main() { 
   const stats = generateStats();
+  console.log(stats);
   const outputPath = path.join(process.cwd(), 'stats.json');
   
   fs.writeFileSync(outputPath, JSON.stringify(stats, null, 2));
-  
-  console.log(`✅ Stats generated successfully!`);
-  console.log(`📊 Total problems solved: ${stats.totalSolved}`);
-  console.log(`📈 Difficulty breakdown:`);
-  console.log(`   - Easy: ${stats.byDifficulty.Easy}`);
-  console.log(`   - Medium: ${stats.byDifficulty.Medium}`);
-  console.log(`   - Hard: ${stats.byDifficulty.Hard}`);
-  console.log(`🔥 Current streak: ${stats.streak.current} days`);
-  console.log(`🏆 Longest streak: ${stats.streak.longest} days`);
-  console.log(`📝 Stats saved to: ${outputPath}`);
+
+  //! not needed logs
+  // console.log(`✅ Stats generated successfully!`);
+  // console.log(`📊 Total problems solved: ${stats.totalSolved}`);
+  // console.log(`📈 Difficulty breakdown:`);
+  // console.log(`   - Easy: ${stats.byDifficulty.Easy}`);
+  // console.log(`   - Medium: ${stats.byDifficulty.Medium}`);
+  // console.log(`   - Hard: ${stats.byDifficulty.Hard}`);
+  // console.log(`🔥 Current streak: ${stats.streak.current} days`);
+  // console.log(`🏆 Longest streak: ${stats.streak.longest} days`);
+  // console.log(`📝 Stats saved to: ${outputPath}`);
 }
 
 main();
