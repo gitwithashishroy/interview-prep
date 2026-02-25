@@ -24,6 +24,5 @@ function isPalindrome(x: number): boolean {
          x = Math.floor(x / 10);
        }
     }
-    
     return rev === x || x === Math.floor(rev/10) ;
 };

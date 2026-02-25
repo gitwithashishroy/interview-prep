@@ -1,16 +1,26 @@
 {
-  "name": "dsa-solutions",
+  "name": "interview-prep",
   "version": "1.0.0",
-  "description": "Data Structures and Algorithms solutions with automated stats generation",
+  "description": "Comprehensive interview preparation: DSA, Frontend, React, Polyfills, and System Design",
   "scripts": {
     "generate-stats": "ts-node scripts/generate-stats.ts",
-    "stats": "npm run generate-stats"
+    "stats": "npm run generate-stats",
+    "solve": "ts-node scripts/run.ts",
+    "run": "ts-node scripts/run.ts",
+    "dev": "ts-node",
+    "lint": "eslint . --ext .js,.ts,.tsx",
+    "lint:fix": "eslint . --ext .js,.ts,.tsx --fix",
+    "format": "prettier --write \"**/*.{js,ts,tsx,json,css,md}\""
   },
   "keywords": [
     "dsa",
     "leetcode",
     "algorithms",
-    "data-structures"
+    "data-structures",
+    "frontend",
+    "react",
+    "javascript",
+    "interview-prep"
   ],
   "author": "Ashish Roy",
   "license": "MIT",
