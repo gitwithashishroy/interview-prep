@@ -1,10 +1,10 @@
-# 🚀 DSA Solutions Repository
+# 🚀 Interview Preparation Repository
 
 [![Total Problems](https://img.shields.io/badge/Total%20Problems-1-blue)](./stats.json)
 [![Last Updated](https://img.shields.io/badge/Last%20Updated-Dynamic-green)](./stats.json)
 [![Language](https://img.shields.io/badge/Language-TypeScript-blue)](./stats.json)
 
-> A collection of Data Structures and Algorithms solutions from various platforms like LeetCode, HackerRank, and more.
+> Comprehensive interview preparation: DSA, Frontend, React, Polyfills, and System Design for SDE-2 positions.
 
 ## 📊 Statistics
 
@@ -33,11 +33,21 @@ This repository automatically tracks and updates statistics about solved problem
 ## 📁 Repository Structure
 
 ```
-dsa-solutions/
+interview-prep/
+├── dsa-practice/      # DSA fundamentals
 ├── leetcode/          # LeetCode solutions
-├── scripts/           # Stats generation scripts
+├── frontend-prep/     # Frontend interview prep
+│   ├── javascript/    # Core JS concepts
+│   ├── react/         # React patterns
+│   ├── polyfills/     # Native implementations
+│   ├── machine-coding/# UI challenges
+│   ├── css/           # Layouts & styling
+│   └── system-design/ # Architecture
+├── scripts/           # Automation scripts
 ├── .github/           # GitHub Actions workflows
-├── stats.json         # Auto-generated stats (for portfolio)
+├── stats.json         # Auto-generated stats
+└── README.md
+```
 └── README.md
 ```
 
@@ -130,10 +140,39 @@ function DSAStats() {
 
 ## 🚀 Getting Started
 
-1. Add your solution files in the appropriate folders (leetcode/, hackerrank/, etc.)
-2. Include the metadata comment block at the top of each file
-3. Push your changes
-4. GitHub Actions will automatically update the stats!
+### Run Any Solution
+```bash
+# DSA solutions
+npm run solve palindrom.ts
+npm run solve binary-search.ts
+
+# Frontend solutions
+npm run solve closure.js
+npm run solve map.polyfill.js
+
+# Or use keyboard shortcut: Cmd+Shift+B (Mac) / Ctrl+Shift+B (Windows)
+```
+
+### Setup (One-time)
+```bash
+npm install
+```
+
+### Optional: ESLint & Prettier
+```bash
+npm install -D eslint prettier eslint-config-prettier
+npm run lint
+npm run format
+```
+
+See [SETUP.md](SETUP.md) for detailed configuration.
+
+## 📚 Documentation
+
+- [Frontend Interview Guide](FRONTEND-README.md) - Complete frontend prep roadmap
+- [How to Run Solutions](README-RUN.md) - Quick start guide
+- [Contributing Guidelines](CONTRIBUTING.md) - Commit format & conventions
+- [Setup Instructions](SETUP.md) - ESLint/Prettier configuration
 
 ## 📝 License
 

@@ -1,6 +1,33 @@
+# Dependencies
 node_modules/
+package-lock.json
+
+# Build outputs
 dist/
-*.log
-.DS_Store
-.vscode/
+build/
+*.min.js
+*.min.css
+
+# IDE
+.vscode/settings.json
 .idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+*.log
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Testing
+coverage/
+.nyc_output/
+
+# Misc
+*.cache
+.eslintcache

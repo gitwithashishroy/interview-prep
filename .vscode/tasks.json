@@ -1,0 +1,69 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Run Current File",
+      "type": "shell",
+      "command": "${command:workbench.action.terminal.sendSequence}",
+      "args": [
+        {
+          "text": "clear && npm run solve ${fileBasename}\n"
+        }
+      ],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "clear": true,
+        "focus": true
+      },
+      "problemMatcher": [],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
+    {
+      "label": "Run TypeScript File (Direct)",
+      "type": "shell",
+      "command": "ts-node",
+      "args": [
+        "${file}"
+      ],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "clear": true,
+        "focus": true
+      },
+      "problemMatcher": [],
+      "group": "build"
+    },
+    {
+      "label": "Run JavaScript File (Direct)",
+      "type": "shell",
+      "command": "node",
+      "args": [
+        "${file}"
+      ],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "clear": true,
+        "focus": true
+      },
+      "problemMatcher": [],
+      "group": "build"
+    },
+    {
+      "label": "Run with Input",
+      "type": "shell",
+      "command": "echo 'Enter filename:' && read filename && npm run solve $filename",
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "focus": true
+      },
+      "problemMatcher": []
+    }
+  ]
+}
