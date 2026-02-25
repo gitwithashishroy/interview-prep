@@ -1,6 +1,6 @@
 {
   "totalSolved": 2,
-  "lastUpdated": "2026-01-23T04:12:37.744Z",
+  "lastUpdated": "2026-02-25T16:03:24.073Z",
   "byDifficulty": {
     "Easy": 2,
     "Medium": 0,
@@ -37,7 +37,7 @@
     }
   ],
   "streak": {
-    "current": 2,
+    "current": 0,
     "longest": 2
   },
   "username": "ashish_roy",
